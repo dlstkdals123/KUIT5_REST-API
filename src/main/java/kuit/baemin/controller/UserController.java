@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -20,17 +21,9 @@ public class UserController {
     //  기본
     @PostMapping("/users")
 //    @ResponseBody
-    public String signup1 (@RequestBody SignupRequest signupRequest) {
+    public String signup1 (@Validated @RequestBody SignupRequest signupRequest) {
         log.info("signup request - email : {}, password : {}",
                 signupRequest.getEmail(), signupRequest.getPassword());
-
-        if (signupRequest.getEmail() : 형식) {
-            ...
-        }
-        if (signupRequest.getPassword() : 형식 ) {
-            ...
-        }
-
 
         return "ok";
     }

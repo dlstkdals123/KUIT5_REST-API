@@ -2,6 +2,8 @@ package kuit.baemin.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +18,8 @@ public class SignupRequest {
         this.password = password;
     }
 
+    @Email
     private String email;
+    @Size(min = 6, max = 20)
     private String password;
 }
