@@ -21,12 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class UserController {
 
-    private final SignupValidator signupValidator;
 
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.setValidator(signupValidator);
-    }
 
     //  기본
     @PostMapping("/users")
@@ -36,7 +31,7 @@ public class UserController {
                 signupRequest.getEmail(), signupRequest.getPassword(), signupRequest.getConfirmPassword());
 
         if (bindingResult.hasErrors()) {
-            throw new IllegalArgumentException();
+            throw new RuntimeException();
         }
 
         return "ok";
