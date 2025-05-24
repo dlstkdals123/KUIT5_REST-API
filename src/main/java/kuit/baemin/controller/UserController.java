@@ -4,12 +4,15 @@ import kuit.baemin.domain.User;
 import kuit.baemin.dto.SignupRequest;
 import kuit.baemin.utils.BaseResponse;
 import kuit.baemin.utils.BaseResponseStatus;
+import kuit.baemin.validator.SignupValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -18,12 +21,23 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class UserController {
 
+    private final SignupValidator signupValidator;
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.setValidator(signupValidator);
+    }
+
     //  기본
     @PostMapping("/users")
 //    @ResponseBody
-    public String signup1 (@Validated @RequestBody SignupRequest signupRequest) {
-        log.info("signup request - email : {}, password : {}",
-                signupRequest.getEmail(), signupRequest.getPassword());
+    public String signup1 (@Validated @RequestBody SignupRequest signupRequest, BindingResult bindingResult) {
+        log.info("signup request - email : {}, password : {}, confirm_password : {}",
+                signupRequest.getEmail(), signupRequest.getPassword(), signupRequest.getConfirmPassword());
+
+        if (bindingResult.hasErrors()) {
+            throw new IllegalArgumentException();
+        }
 
         return "ok";
     }
