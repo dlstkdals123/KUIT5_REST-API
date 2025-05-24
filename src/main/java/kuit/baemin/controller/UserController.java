@@ -9,19 +9,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @Slf4j
-@Controller
+//@Controller
+@RestController
 public class UserController {
 
     //  기본
     @PostMapping("/users")
-    @ResponseBody
+//    @ResponseBody
     public String signup1 (@RequestBody SignupRequest signupRequest) {
         log.info("signup request - email : {}, password : {}",
                 signupRequest.getEmail(), signupRequest.getPassword());
@@ -31,7 +29,7 @@ public class UserController {
 
     // 요청 파라미터로 HttpEntity로 매핑
 //    @PostMapping("/users")
-    @ResponseBody
+//    @ResponseBody
     public String signup2 (HttpEntity<SignupRequest> signupRequest) {
         log.info("signup request - email : {}, password : {}",
                 signupRequest.getBody().getEmail(), signupRequest.getBody().getPassword());
@@ -50,7 +48,7 @@ public class UserController {
 
     //  @RequestBody 제거
 //    @PostMapping("/users")
-    @ResponseBody
+//    @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String signup4 (SignupRequest signupRequest) {
         log.info("signup request - email : {}, password : {}",
@@ -61,7 +59,7 @@ public class UserController {
 
     // 객체 to json
 //    @PostMapping("/users")
-    @ResponseBody
+//    @ResponseBody
     public BaseResponse<User> signup5 (@RequestBody SignupRequest signupRequest) {
         log.info("signup request - email : {}, password : {}",
                 signupRequest.getEmail(), signupRequest.getPassword());
@@ -73,7 +71,7 @@ public class UserController {
 
     //  오류 응답
 //    @PostMapping("/users")
-    @ResponseBody
+//    @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public BaseResponse<Object> signup6 (SignupRequest signupRequest) {
         log.info("signup request - email : {}, password : {}",
