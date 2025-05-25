@@ -2,18 +2,19 @@ package kuit.baemin.controller;
 
 import kuit.baemin.domain.User;
 import kuit.baemin.dto.SignupRequest;
+import kuit.baemin.service.UserServiceV4;
 import kuit.baemin.utils.BaseResponse;
 import kuit.baemin.utils.BaseResponseStatus;
-import kuit.baemin.validator.SignupValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -21,10 +22,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class UserController {
 
+    private final UserServiceV4 usersService;
 
 
     //  기본
-    @PostMapping("/users")
+//    @PostMapping("/users")
 //    @ResponseBody
     public String signup1 (@Validated @RequestBody SignupRequest signupRequest, BindingResult bindingResult) {
         log.info("signup request - email : {}, password : {}, confirm_password : {}",
@@ -76,6 +78,17 @@ public class UserController {
 
         User user = new User(signupRequest.getEmail(), signupRequest.getPassword());
 
+        return new BaseResponse<>(user);
+    }
+
+    // 객체 to json
+    @PostMapping("/users")
+//    @ResponseBody
+    public BaseResponse<User> signup (@Validated @RequestBody SignupRequest signupRequest) {
+        log.info("signup request - email : {}, password : {}",
+                signupRequest.getEmail(), signupRequest.getPassword());
+
+        User user = usersService.save(signupRequest);
         return new BaseResponse<>(user);
     }
 

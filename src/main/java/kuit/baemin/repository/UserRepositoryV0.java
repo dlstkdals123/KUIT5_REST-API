@@ -11,7 +11,7 @@ import java.sql.*;
  * JDBC - DriverManager 사용
  */
 @Slf4j
-@Repository
+//@Repository
 public class UserRepositoryV0 {
 
     public User save(User user) throws SQLException {

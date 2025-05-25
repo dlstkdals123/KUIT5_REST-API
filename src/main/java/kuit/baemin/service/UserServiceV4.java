@@ -5,6 +5,7 @@ import kuit.baemin.dto.SignupRequest;
 import kuit.baemin.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -14,14 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Slf4j
 @RequiredArgsConstructor
+@Service
 public class UserServiceV4 {
 
     private final UserRepository userRepository;
 
     @Transactional
-    public void save(SignupRequest signupRequest) {
-        userRepository.save(new User(signupRequest.getEmail(), signupRequest.getPassword()));
-        validateEmail();
+    public User save(SignupRequest signupRequest) {
+        return userRepository.save(new User(signupRequest.getEmail(), signupRequest.getPassword()));
     }
 
     private static void validateEmail() {
