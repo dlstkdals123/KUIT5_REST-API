@@ -1,5 +1,6 @@
 package kuit.baemin.controller;
 
+import jakarta.servlet.http.HttpSession;
 import kuit.baemin.domain.User;
 import kuit.baemin.dto.LoginRequest;
 import kuit.baemin.exception.InvalidLoginException;
@@ -19,7 +20,8 @@ public class LoginController {
     private final UserServiceV4 usersService;
 
     @PostMapping("/login")
-    public BaseResponse<User> login (@RequestBody LoginRequest loginRequest) {
+    public BaseResponse<User> login (@RequestBody LoginRequest loginRequest,
+                                     HttpSession session) {
         log.info("login request - nickname: {}, password : {}",
                 loginRequest.getNickname(), loginRequest.getPassword());
 
@@ -27,6 +29,7 @@ public class LoginController {
         if (!user.getPassword().equals(loginRequest.getPassword()))
             throw new InvalidLoginException(BaseResponseStatus.NON_MATCH_CREDENTIALS.getResponseMessage());
 
+        session.setAttribute("user", user);
         return new BaseResponse<>(user);
     }
 
