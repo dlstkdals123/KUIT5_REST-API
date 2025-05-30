@@ -22,17 +22,6 @@ public class MenuService {
 
     private final MenuRepository menuRepository;
 
-    @Transactional
-    public Menu save(MenuRequest menuRequest) {
-        return menuRepository.save(Menu.builder()
-                        .menu_name(menuRequest.getMenu_name())
-                        .price(menuRequest.getPrice())
-                        .recommendation_count(menuRequest.getRecommendation_count())
-                        .option(menuRequest.getOption())
-                        .restaurant_id(menuRequest.getRestaurant_id())
-                        .build());
-    }
-
     public List<Menu> findAll() {
         return menuRepository.findAll();
     }

@@ -1,8 +1,6 @@
 package kuit.baemin.repository;
 
 import kuit.baemin.domain.User;
-import kuit.baemin.exception.InvalidLoginException;
-import kuit.baemin.utils.BaseResponseStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
