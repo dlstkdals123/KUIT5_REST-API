@@ -1,7 +1,10 @@
 package kuit.baemin.repository;
 
 import kuit.baemin.domain.User;
+import kuit.baemin.exception.InvalidLoginException;
+import kuit.baemin.utils.BaseResponseStatus;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -48,9 +51,13 @@ public class UserRepositoryV6 implements UserRepository {
     }
 
     public User find(User user) {
-        String selectSql = "SELECT * FROM users WHERE nickname = ?";
+        try {
+            String selectSql = "SELECT * FROM users WHERE nickname = ?";
 
-        return jdbcTemplate.queryForObject(selectSql, userRowMapper(), user.getNickname());
+            return jdbcTemplate.queryForObject(selectSql, userRowMapper(), user.getNickname());
+        } catch (EmptyResultDataAccessException e) {
+            throw new InvalidLoginException(BaseResponseStatus.NON_FOUND_USER.getResponseMessage());
+        }
     }
 
     private RowMapper<User> userRowMapper() {

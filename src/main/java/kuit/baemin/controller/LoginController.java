@@ -2,6 +2,7 @@ package kuit.baemin.controller;
 
 import kuit.baemin.domain.User;
 import kuit.baemin.dto.LoginRequest;
+import kuit.baemin.exception.InvalidLoginException;
 import kuit.baemin.service.UserServiceV4;
 import kuit.baemin.utils.BaseResponse;
 import kuit.baemin.utils.BaseResponseStatus;
@@ -24,13 +25,15 @@ public class LoginController {
                 loginRequest.getNickname(), loginRequest.getPassword());
 
         User user = usersService.find(loginRequest);
+        if (!user.getPassword().equals(loginRequest.getPassword()))
+            throw new InvalidLoginException(BaseResponseStatus.NON_FOUND_USER.getResponseMessage());
 
         return new BaseResponse<>(user);
     }
 
-    @ExceptionHandler(EmptyResultDataAccessException.class)
+    @ExceptionHandler(InvalidLoginException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public BaseResponse<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException e) {
+    public BaseResponse<Object> handleEmptyResultDataAccessException(InvalidLoginException e) {
         return new BaseResponse<>(BaseResponseStatus.NON_FOUND_USER);
     }
 }
