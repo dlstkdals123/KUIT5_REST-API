@@ -31,7 +31,6 @@ public class LoginController {
     @ExceptionHandler(EmptyResultDataAccessException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public BaseResponse<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException e) {
-        log.error(e.getMessage(), e);
         return new BaseResponse<>(BaseResponseStatus.NON_FOUND_USER);
     }
 }
