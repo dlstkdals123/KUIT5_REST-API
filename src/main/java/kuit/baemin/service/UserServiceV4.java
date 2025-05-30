@@ -32,11 +32,16 @@ public class UserServiceV4 {
     }
 
     @Transactional
-    public User find(LoginRequest loginRequest) {
+    public User findByLoginRequest(LoginRequest loginRequest) {
         return userRepository.find(User.builder()
                 .nickname(loginRequest.getNickname())
                 .password(loginRequest.getPassword())
                 .build());
+    }
+
+    @Transactional
+    public User findByUserId(Long userId) {
+        return userRepository.findByUserId(userId);
     }
 
     private static void validateEmail() {

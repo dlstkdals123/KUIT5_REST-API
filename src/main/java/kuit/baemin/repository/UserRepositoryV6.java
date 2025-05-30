@@ -56,8 +56,13 @@ public class UserRepositoryV6 implements UserRepository {
 
             return jdbcTemplate.queryForObject(selectSql, userRowMapper(), user.getNickname());
         } catch (EmptyResultDataAccessException e) {
-            throw new InvalidLoginException(BaseResponseStatus.NON_FOUND_USER.getResponseMessage());
+            throw new InvalidLoginException(BaseResponseStatus.NON_MATCH_CREDENTIALS.getResponseMessage());
         }
+    }
+
+    public User findByUserId(Long userId) {
+        String selectSql = "SELECT * FROM users WHERE user_id = ?";
+        return jdbcTemplate.queryForObject(selectSql, userRowMapper(), userId);
     }
 
     private RowMapper<User> userRowMapper() {

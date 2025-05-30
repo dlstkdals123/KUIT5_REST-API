@@ -7,9 +7,8 @@ import kuit.baemin.utils.BaseResponse;
 import kuit.baemin.utils.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,5 +52,16 @@ public class UserController {
         return new BaseResponse<>(BaseResponseStatus.DUPLICATED_NICKNAME);
     }
 
+    @GetMapping("/users/{userId}")
+    public BaseResponse<User> getUser (@PathVariable Long userId) {
+        log.info("get user - userId: {}", userId);
+        User user = usersService.findByUserId(userId);
+        return new BaseResponse<>(user);
+    }
 
+    @ExceptionHandler(EmptyResultDataAccessException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public BaseResponse<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex) {
+        return new BaseResponse<>(BaseResponseStatus.USER_NOT_FOUND);
+    }
 }

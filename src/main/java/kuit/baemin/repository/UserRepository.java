@@ -7,4 +7,6 @@ public interface UserRepository {
     public User save(User user);
 
     User find(User build);
+
+    User findByUserId(Long userId);
 }

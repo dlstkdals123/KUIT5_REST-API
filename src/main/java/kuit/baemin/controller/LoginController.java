@@ -8,7 +8,6 @@ import kuit.baemin.utils.BaseResponse;
 import kuit.baemin.utils.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,9 +23,9 @@ public class LoginController {
         log.info("login request - nickname: {}, password : {}",
                 loginRequest.getNickname(), loginRequest.getPassword());
 
-        User user = usersService.find(loginRequest);
+        User user = usersService.findByLoginRequest(loginRequest);
         if (!user.getPassword().equals(loginRequest.getPassword()))
-            throw new InvalidLoginException(BaseResponseStatus.NON_FOUND_USER.getResponseMessage());
+            throw new InvalidLoginException(BaseResponseStatus.NON_MATCH_CREDENTIALS.getResponseMessage());
 
         return new BaseResponse<>(user);
     }
@@ -34,6 +33,6 @@ public class LoginController {
     @ExceptionHandler(InvalidLoginException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public BaseResponse<Object> handleEmptyResultDataAccessException(InvalidLoginException e) {
-        return new BaseResponse<>(BaseResponseStatus.NON_FOUND_USER);
+        return new BaseResponse<>(BaseResponseStatus.NON_MATCH_CREDENTIALS);
     }
 }
