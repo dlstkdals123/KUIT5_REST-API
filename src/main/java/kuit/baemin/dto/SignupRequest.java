@@ -25,4 +25,7 @@ public class SignupRequest {
     @Size(min = 6, max = 20)
     private String password;
     private String confirmPassword;
+    private String nickname;
+    @Size(min = 11, max = 20)
+    private String phoneNumber;
 }

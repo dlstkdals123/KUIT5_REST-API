@@ -22,7 +22,12 @@ public class UserServiceV4 {
 
     @Transactional
     public User save(SignupRequest signupRequest) {
-        return userRepository.save(new User(signupRequest.getEmail(), signupRequest.getPassword()));
+        return userRepository.save(User.builder()
+                .nickname(signupRequest.getNickname())
+                .password(signupRequest.getPassword())
+                .email(signupRequest.getEmail())
+                .phoneNumber(signupRequest.getPhoneNumber())
+                .build());
     }
 
     private static void validateEmail() {
