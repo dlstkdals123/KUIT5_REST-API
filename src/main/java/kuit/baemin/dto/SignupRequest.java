@@ -14,10 +14,14 @@ public class SignupRequest {
     @JsonCreator
     public SignupRequest(@JsonProperty("email") String email,
                          @JsonProperty("password") String password,
-                         @JsonProperty("confirm_password") String confirmPassword) {
+                         @JsonProperty("confirm_password") String confirmPassword,
+                         @JsonProperty("nickname") String nickname,
+                         @JsonProperty("phone_number") String phoneNumber) {
         this.email = email;
         this.password = password;
         this.confirmPassword = confirmPassword;
+        this.nickname = nickname;
+        this.phoneNumber = phoneNumber;
     }
 
     @Email

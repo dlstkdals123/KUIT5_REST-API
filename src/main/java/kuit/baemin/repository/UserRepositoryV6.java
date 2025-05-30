@@ -47,6 +47,12 @@ public class UserRepositoryV6 implements UserRepository {
         return jdbcTemplate.queryForObject(selectSql, userRowMapper(), userId);
     }
 
+    public User find(User user) {
+        String selectSql = "SELECT * FROM users WHERE nickname = ?";
+
+        return jdbcTemplate.queryForObject(selectSql, userRowMapper(), user.getNickname());
+    }
+
     private RowMapper<User> userRowMapper() {
         return (rs, rowNum) -> User.builder()
                 .userId(rs.getLong("user_id"))

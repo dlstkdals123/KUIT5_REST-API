@@ -1,6 +1,7 @@
 package kuit.baemin.service;
 
 import kuit.baemin.domain.User;
+import kuit.baemin.dto.LoginRequest;
 import kuit.baemin.dto.SignupRequest;
 import kuit.baemin.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,14 @@ public class UserServiceV4 {
                 .password(signupRequest.getPassword())
                 .email(signupRequest.getEmail())
                 .phoneNumber(signupRequest.getPhoneNumber())
+                .build());
+    }
+
+    @Transactional
+    public User find(LoginRequest loginRequest) {
+        return userRepository.find(User.builder()
+                .nickname(loginRequest.getNickname())
+                .password(loginRequest.getPassword())
                 .build());
     }
 
