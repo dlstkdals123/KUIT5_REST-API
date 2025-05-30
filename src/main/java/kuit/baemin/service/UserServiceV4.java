@@ -3,9 +3,13 @@ package kuit.baemin.service;
 import kuit.baemin.domain.User;
 import kuit.baemin.dto.LoginRequest;
 import kuit.baemin.dto.SignupRequest;
+import kuit.baemin.dto.UserUpdateRequest;
+import kuit.baemin.exception.InvalidLoginException;
 import kuit.baemin.repository.UserRepositoryV6;
+import kuit.baemin.utils.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,10 +37,17 @@ public class UserServiceV4 {
 
     @Transactional
     public User findByLoginRequest(LoginRequest loginRequest) {
-        return userRepository.find(User.builder()
-                .nickname(loginRequest.getNickname())
-                .password(loginRequest.getPassword())
-                .build());
+        try {
+            User user = userRepository.findByNickname(loginRequest.getNickname());
+
+            if (!user.getPassword().equals(loginRequest.getPassword()))
+                throw new InvalidLoginException(BaseResponseStatus.NON_MATCH_CREDENTIALS.getResponseMessage());
+
+            return user;
+
+        } catch (EmptyResultDataAccessException e) {
+            throw new InvalidLoginException(BaseResponseStatus.NON_MATCH_CREDENTIALS.getResponseMessage());
+        }
     }
 
     @Transactional
@@ -50,7 +61,13 @@ public class UserServiceV4 {
     }
 
     @Transactional
-    public User update(Long userId, User user) {
-        return userRepository.update(userId, user);
+    public User update(Long userId, UserUpdateRequest userUpdateRequest) {
+        return userRepository.update(userId, User.builder()
+                .userId(userId)
+                .nickname(userUpdateRequest.getNickname())
+                .password(userUpdateRequest.getPassword())
+                .email(userUpdateRequest.getEmail())
+                .phoneNumber(userUpdateRequest.getPhoneNumber())
+                .build());
     }
 }

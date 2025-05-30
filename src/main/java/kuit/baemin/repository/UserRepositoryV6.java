@@ -46,14 +46,9 @@ public class UserRepositoryV6 {
         return findByUserId(keyHolder.getKey().longValue());
     }
 
-    public User find(User user) {
-        try {
-            String selectSql = "SELECT * FROM users WHERE nickname = ?";
-
-            return jdbcTemplate.queryForObject(selectSql, userRowMapper(), user.getNickname());
-        } catch (EmptyResultDataAccessException e) {
-            throw new InvalidLoginException(BaseResponseStatus.NON_MATCH_CREDENTIALS.getResponseMessage());
-        }
+    public User findByNickname(String nickname) {
+        String selectSql = "SELECT * FROM users WHERE nickname = ?";
+        return jdbcTemplate.queryForObject(selectSql, userRowMapper(), nickname);
     }
 
     public User findByUserId(Long userId) {

@@ -22,12 +22,7 @@ public class LoginController {
     @PostMapping("/login")
     public BaseResponse<User> login (@RequestBody LoginRequest loginRequest,
                                      HttpSession session) {
-        log.info("login request - nickname: {}, password : {}",
-                loginRequest.getNickname(), loginRequest.getPassword());
-
         User user = usersService.findByLoginRequest(loginRequest);
-        if (!user.getPassword().equals(loginRequest.getPassword()))
-            throw new InvalidLoginException(BaseResponseStatus.NON_MATCH_CREDENTIALS.getResponseMessage());
 
         session.setAttribute("user", user);
         return new BaseResponse<>(user);

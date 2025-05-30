@@ -3,6 +3,7 @@ package kuit.baemin.controller;
 import jakarta.servlet.http.HttpSession;
 import kuit.baemin.domain.User;
 import kuit.baemin.dto.SignupRequest;
+import kuit.baemin.dto.UserUpdateRequest;
 import kuit.baemin.exception.UnauthorizedException;
 import kuit.baemin.service.UserServiceV4;
 import kuit.baemin.utils.BaseResponse;
@@ -55,8 +56,11 @@ public class UserController {
     }
 
     @GetMapping("/users/{userId}")
-    public BaseResponse<User> getUser (@PathVariable Long userId) {
+    public BaseResponse<User> getUser (@PathVariable Long userId, HttpSession session) {
         log.info("get user - userId: {}", userId);
+
+        ValidateUser(userId, session);
+
         User user = usersService.findByUserId(userId);
         return new BaseResponse<>(user);
     }
@@ -68,18 +72,13 @@ public class UserController {
     }
 
     @PutMapping("/users/{userId}")
-    public BaseResponse<User> updateUser (@PathVariable Long userId, @RequestBody User user, HttpSession session) {
+    public BaseResponse<User> updateUser (@PathVariable Long userId, @RequestBody UserUpdateRequest userUpdateRequest, HttpSession session) {
         log.info("update user - userId: {}, nickname: {}, password: {}, email: {}, phoneNumber: {}",
-                userId, user.getNickname(), user.getPassword(), user.getEmail(), user.getPhoneNumber());
+                userId, userUpdateRequest.getNickname(), userUpdateRequest.getPassword(), userUpdateRequest.getEmail(), userUpdateRequest.getPhoneNumber());
 
-        if (session.getAttribute("user") == null)
-            throw new UnauthorizedException(BaseResponseStatus.UNAUTHORIZED.getResponseMessage());
+        ValidateUser(userId, session);
 
-        User loginUser = (User) session.getAttribute("user");
-        if (!loginUser.getUserId().equals(userId))
-            throw new UnauthorizedException(BaseResponseStatus.UNAUTHORIZED.getResponseMessage());
-
-        User updateUser = usersService.update(userId, user);
+        User updateUser = usersService.update(userId, userUpdateRequest);
         return new BaseResponse<>(updateUser);
     }
 
@@ -89,5 +88,12 @@ public class UserController {
         return new BaseResponse<>(BaseResponseStatus.UNAUTHORIZED);
     }
 
+    private void ValidateUser(Long userId, HttpSession session) {
+        if (session.getAttribute("user") == null)
+            throw new UnauthorizedException(BaseResponseStatus.UNAUTHORIZED.getResponseMessage());
 
+        User loginUser = (User) session.getAttribute("user");
+        if (!loginUser.getUserId().equals(userId))
+            throw new UnauthorizedException(BaseResponseStatus.UNAUTHORIZED.getResponseMessage());
+    }
 }
