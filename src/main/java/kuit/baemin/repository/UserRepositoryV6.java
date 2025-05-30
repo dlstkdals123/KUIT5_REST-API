@@ -20,7 +20,7 @@ import java.sql.Statement;
  */
 @Slf4j
 @Repository
-public class UserRepositoryV6 implements UserRepository {
+public class UserRepositoryV6 {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -43,11 +43,7 @@ public class UserRepositoryV6 implements UserRepository {
             return pstmt;
         }, keyHolder);
 
-        Long userId = keyHolder.getKey().longValue();
-
-        String selectSql = "SELECT * FROM users WHERE user_id = ?";
-
-        return jdbcTemplate.queryForObject(selectSql, userRowMapper(), userId);
+        return findByUserId(keyHolder.getKey().longValue());
     }
 
     public User find(User user) {
@@ -76,5 +72,24 @@ public class UserRepositoryV6 implements UserRepository {
                 .createdAt(rs.getTimestamp("created_at"))
                 .updatedAt(rs.getTimestamp("updated_at"))
                 .build();
+    }
+
+    public User update(Long userId, User user) {
+        String updateSql = "UPDATE users SET nickname = ?, password = ?, email = ?, phone_number = ? WHERE user_id = ?";
+
+        int row = jdbcTemplate.update(connection -> {
+            PreparedStatement pstmt = connection.prepareStatement(updateSql);
+            pstmt.setString(1, user.getNickname());
+            pstmt.setString(2, user.getPassword());
+            pstmt.setString(3, user.getEmail());
+            pstmt.setString(4, user.getPhoneNumber());
+            pstmt.setLong(5, userId);
+            return pstmt;
+        });
+
+        if (row == 0)
+            throw new EmptyResultDataAccessException(1);
+
+        return findByUserId(userId);
     }
 }

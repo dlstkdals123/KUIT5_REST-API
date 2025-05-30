@@ -1,7 +1,9 @@
 package kuit.baemin.controller;
 
+import jakarta.servlet.http.HttpSession;
 import kuit.baemin.domain.User;
 import kuit.baemin.dto.SignupRequest;
+import kuit.baemin.exception.UnauthorizedException;
 import kuit.baemin.service.UserServiceV4;
 import kuit.baemin.utils.BaseResponse;
 import kuit.baemin.utils.BaseResponseStatus;
@@ -64,4 +66,28 @@ public class UserController {
     public BaseResponse<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex) {
         return new BaseResponse<>(BaseResponseStatus.USER_NOT_FOUND);
     }
+
+    @PutMapping("/users/{userId}")
+    public BaseResponse<User> updateUser (@PathVariable Long userId, @RequestBody User user, HttpSession session) {
+        log.info("update user - userId: {}, nickname: {}, password: {}, email: {}, phoneNumber: {}",
+                userId, user.getNickname(), user.getPassword(), user.getEmail(), user.getPhoneNumber());
+
+        if (session.getAttribute("user") == null)
+            throw new UnauthorizedException(BaseResponseStatus.UNAUTHORIZED.getResponseMessage());
+
+        User loginUser = (User) session.getAttribute("user");
+        if (!loginUser.getUserId().equals(userId))
+            throw new UnauthorizedException(BaseResponseStatus.UNAUTHORIZED.getResponseMessage());
+
+        User updateUser = usersService.update(userId, user);
+        return new BaseResponse<>(updateUser);
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public BaseResponse<User> handleUnauthorizedException(UnauthorizedException ex) {
+        return new BaseResponse<>(BaseResponseStatus.UNAUTHORIZED);
+    }
+
+
 }

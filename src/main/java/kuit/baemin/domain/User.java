@@ -18,4 +18,11 @@ public class User {
     private String status;
     private Timestamp createdAt;
     private Timestamp updatedAt;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof User compareUser))
+            return false;
+        return compareUser.getUserId().equals(userId);
+    }
 }

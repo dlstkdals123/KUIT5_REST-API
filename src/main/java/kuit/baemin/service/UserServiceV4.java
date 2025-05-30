@@ -3,7 +3,7 @@ package kuit.baemin.service;
 import kuit.baemin.domain.User;
 import kuit.baemin.dto.LoginRequest;
 import kuit.baemin.dto.SignupRequest;
-import kuit.baemin.repository.UserRepository;
+import kuit.baemin.repository.UserRepositoryV6;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserServiceV4 {
 
-    private final UserRepository userRepository;
+    private final UserRepositoryV6 userRepository;
 
     @Transactional
     public User save(SignupRequest signupRequest) {
@@ -47,5 +47,10 @@ public class UserServiceV4 {
     private static void validateEmail() {
         log.error("이메일 검증 오류");
         throw new RuntimeException();
+    }
+
+    @Transactional
+    public User update(Long userId, User user) {
+        return userRepository.update(userId, user);
     }
 }
