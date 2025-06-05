@@ -1,26 +1,28 @@
 package kuit.baemin.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
 
 @Getter
 @Setter
+@Builder
 public class User {
-
-    public User(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
-
     private Long userId;
-    private String email;
-    private String password;
-    private String phone_number;
     private String nickname;
-    private String profile_image;
+    private String password;
+    private String email;
+    private String phoneNumber;
     private String status;
-    private LocalDate created_at;
-    private LocalDate updated_at;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof User compareUser))
+            return false;
+        return compareUser.getUserId().equals(userId);
+    }
 }

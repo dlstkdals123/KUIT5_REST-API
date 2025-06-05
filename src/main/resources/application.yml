@@ -1,4 +1,9 @@
+spring:
+  profiles:
+    active: local
+
 secret:
+
   jwt:
     access:
       key: ${ACCESS_TOKEN_KEY}

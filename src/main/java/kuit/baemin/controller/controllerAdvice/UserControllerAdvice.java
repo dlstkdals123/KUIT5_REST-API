@@ -1,6 +1,5 @@
 package kuit.baemin.controller.controllerAdvice;
 
-import kuit.baemin.controller.UserController;
 import kuit.baemin.utils.BaseResponse;
 import kuit.baemin.utils.BaseResponseStatus;
 import kuit.baemin.validator.SignupValidator;
@@ -27,7 +26,7 @@ public class UserControllerAdvice {
         return new BaseResponse<>(BaseResponseStatus.NON_MATCH_PASSWORD);
     }
 
-    @InitBinder
+    @InitBinder("singupRequest")
     public void initBinder(WebDataBinder binder) {
         binder.setValidator(signupValidator);
     }
